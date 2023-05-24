@@ -12,7 +12,7 @@
 * [Cloning the Repository](#cloning)
 * [Build Instructions](#build)
     - [To install Python dependency](#python_dependency)
-    - [To Build](#build_dreamplacefpga)
+    - [How To Build](#build_dreamplacefpga)
     - [Cmake Options](#cmake)
 * [Sample Benchmarks](#sample)
 * [Running DREAMPlaceFPGA](#running)
@@ -162,13 +162,45 @@ pip install -r requirements.txt
 
 > You can also use a [python virtual environment](https://docs.python.org/3/library/venv.html) to install all the required packages to run ``DREAMPlaceFPGA``
 
-### <a name="build_dreamplacefpga"></a>To Build 
+### <a name="build_dreamplacefpga"></a>How To Build 
 
+Two options are provided for building: with and without [Docker](https://hub.docker.com). 
+
+#### <a name="build_dreamplacefpga_docker"></a>How To Build with Docker
+You can use the Docker container to avoid building all the dependencies yourself. 
+1. Install Docker on [Windows](https://docs.docker.com/docker-for-windows/), [Mac](https://docs.docker.com/docker-for-mac/) or [Linux](https://docs.docker.com/install/).
+2. To enable the GPU features, install [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker); otherwise, skip this step.  
+3. Navigate to the repository. 
+4. Build the container.
+    ```
+    docker build . --file Dockerfile --tag your_name/dreamplace:cuda
+    ```
+5. Enter bash environment of the container.
+    1. Run with GPU on Linux. 
+    ```
+    docker run --gpus 1 -it -v $(pwd):/DREAMPlace your_name/dreamplace:cuda bash
+    ```
+    2. Run with GPU on Windows.
+    ```
+    docker run --gpus 1 -it -v /dreamplace your_name/dreamplace:cuda bash
+    ```
+    3. Run without GPU on Linux. 
+    ```
+    docker run -it -v $(pwd):/DREAMPlace your_name/dreamplace:cuda bash
+    ```
+    4. Run without GPU on Windows.
+    ```
+    docker run -it -v /dreamplace your_name/dreamplace:cuda bash
+    ```
+6. ```cd /DREAMPlace```. 
+7. Go to next section to complete building. 
+
+#### <a name="build_dreamplacefpga_docker"></a>How To Build withOUT Docker
 At the root directory, 
 ```
 mkdir build 
 cd build 
-cmake .. -DCMAKE_INSTALL_PREFIX=path_to_root_dir
+cmake .. -DCMAKE_INSTALL_PREFIX=path_to_root_dir -DPYTHON_EXECUTABLE=$(which python3)
 make
 make install
 ```
@@ -178,7 +210,7 @@ Third party submodules are automatically built except for [Boost](https://www.bo
 
 > ***~/Downloads/DREAMPlaceFPGA:*** *mkdir build; cd build*
 
-> ***~/Downloads/DREAMPlaceFPGA/build:***  *cmake . . -DCMAKE_INSTALL_PREFIX=~/Downloads/DREAMPlaceFPGA*
+> ***~/Downloads/DREAMPlaceFPGA/build:***  *cmake . . -DCMAKE_INSTALL_PREFIX=~/Downloads/DREAMPlaceFPGA -DPYTHON_EXECUTABLE=$(which python3)*
 
 > ***~/Downloads/DREAMPlaceFPGA/build:*** *make; make install*
 
